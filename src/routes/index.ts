@@ -1,4 +1,5 @@
 import { Response, Request, Router, RequestHandler } from 'express'
+import auth from './auth';
 
 const route = Router()
 route.get('/', (req: Request, res: Response) => {
@@ -6,5 +7,5 @@ route.get('/', (req: Request, res: Response) => {
   res.render('index', { title: 'EJS with TypeScript', message: 'Hello, TypeScript with EJS!' });
 })
 
-route.get('/s')
+route.use('/auth', auth)
 export default route

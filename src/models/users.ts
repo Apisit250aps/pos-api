@@ -1,16 +1,19 @@
 import { Document, model, Schema } from 'mongoose'
 import argon2 from 'argon2'
+import jwt from 'jsonwebtoken'
+import { JWT_SECRET } from '../configs'
 export interface IUser extends Document {
   username: string
   password: string
   fname?: string
   lname?: string
   mname?: string
-  isAdmin: boolean
-  isStaff: boolean
-  isActive: boolean
+  isAdmin?: boolean
+  isStaff?: boolean
+  isActive?: boolean
   lastLogin?: Date
   authentication(password: string): Promise<boolean>
+  generateAuthToken(): string
 }
 
 const userSchema = new Schema<IUser>(
@@ -46,11 +49,34 @@ userSchema.methods.authentication = async function (
 ): Promise<boolean> {
   try {
     const isMatch = await argon2.verify(this.password, password)
+    this.lastLogin = Date.now()
     return isMatch
   } catch (err) {
     throw new Error('Error verifying password')
   }
 }
+
+userSchema.methods.generateAuthToken = function (): string {
+  const payload = {
+    userId: this._id,
+    username: this.username,
+    name: `${this.fname} ${this.lname}`,
+    nickName: this.mname,
+    isAdmin: this.isAdmin,
+    isStaff: this.isStaff,
+    isActive: this.isActive,
+  }
+  const token = jwt.sign(payload, JWT_SECRET as string, { expiresIn: '1d' })
+  return token
+}
+
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    // Remove the password field from the response object
+    delete ret.password
+    return ret
+  },
+})
 
 const User = model<IUser>('users', userSchema)
 
