@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { JWT_SECRET } from '../configs'
 
-export const authenticate = async (
+export const authenticate = (
   req: Request,
   res: Response,
   next: NextFunction
-): Promise<void> => {
+): void => {
   const token = req.header('Authorization')?.replace('Bearer ', '')
   if (!token) {
     res.status(401).json({ error: 'No token provided' })
