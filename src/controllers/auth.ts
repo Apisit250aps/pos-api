@@ -4,7 +4,7 @@ import User, { IUser } from '../models/users'
 
 export const createUser = async (
   req: Request,
-  res: Response
+  res: Response<IResponse>
 ): Promise<void> => {
   try {
     const { username, password } = req.body as IUser
