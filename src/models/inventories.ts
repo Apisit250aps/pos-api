@@ -5,7 +5,9 @@ export interface IInventory extends Document {
   cost: number
   itemQuantity: number
   quantity: number
-  unit: number
+  unit: string
+  stock: number
+  stockUnit: string
   minStock: number
   useRecipe(use: number): Promise<number>
 }
@@ -16,7 +18,9 @@ const inventorySchema = new Schema<IInventory>(
     cost: { type: Number, required: true },
     itemQuantity: { type: Number, default: 1, min: 0 },
     quantity: { type: Number, default: 1, min: 0 },
-    unit: { type: Number, default: 1, min: 0 },
+    unit: { type: String, required: true },
+    stock: { type: Number, default: 1, min: 0 },
+    stockUnit: { type: String, required: true },
     minStock: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true }
@@ -34,18 +38,18 @@ inventorySchema.methods.useRecipe = async function (
     if (this.quantity < use) {
       const useQ = use - this.quantity
 
-      if (this.unit < 1) {
-        throw new Error('Not enough units available')
+      if (this.stock < 1) {
+        throw new Error('Not enough stocks available')
       }
- 
-      this.unit -= 1
+
+      this.stock -= 1
       this.quantity = this.itemQuantity - useQ
     } else {
       this.quantity -= use
     }
     return this.quantity
   } catch (error) {
-    throw new Error(`Error using recipe`) 
+    throw new Error(`Error using recipe`)
   }
 }
 const Inventory = model<IInventory>('inventories', inventorySchema)

@@ -4,6 +4,13 @@ export interface IResponse<T = any> {
   data?: T
 }
 
+export interface IPagination {
+  page: number
+  limit: number
+  totalPages: number
+  totalDocs: number
+}
+
 declare global {
   namespace Express {
     interface Request {
