@@ -3,16 +3,25 @@ import { IResponse } from '../types/types'
 import Category, { ICategory } from '../models/categories'
 
 export async function createCategory(
-  req: Request<ICategory>,
+  req: Request,
   res: Response<IResponse<ICategory>>
 ): Promise<void> {
   try {
-    const { name, description, status } = req.body as ICategory
+    const { name, description, status } = req.body
     if (!name) {
       res.status(400).json({
         success: false,
         message: 'Name is required',
       })
+      return
+    }
+    const existCategory = await Category.findOne({ name })
+    if (existCategory) {
+      res.status(400).json({
+        success: false,
+        message: 'Category with the same name already exists',
+      })
+      return
     }
     const category = new Category({ name, description, status })
     await category.save()

@@ -13,12 +13,14 @@ export const inputInventory = async (
       success: true,
       message: 'Inventory items added successfully',
     })
+    return
   } catch (error) {
     console.error(error)
     res.status(500).json({
       success: false,
       message: 'Server error occurred',
     })
+    return
   }
 }
 
@@ -28,7 +30,6 @@ export const getInventory = async (
 ): Promise<void> => {
   try {
     const { page = 1, limit = 10 } = req.query
-    
 
     const [inventories, totalDocs] = await Promise.all([
       Inventory.find({})
@@ -52,11 +53,13 @@ export const getInventory = async (
       data: inventories,
       pagination,
     })
+    return
   } catch (error) {
     console.error(error)
     res.status(500).json({
       success: false,
       message: 'Server error occurred',
     })
+    return
   }
 }

@@ -14,6 +14,7 @@ export const createUser = async (
         success: false,
         message: 'Username already exists',
       } as IResponse)
+      return
     }
     const newUser = new User({ username, password })
     await newUser.save()
@@ -21,12 +22,14 @@ export const createUser = async (
       success: true,
       message: 'User created successfully',
     } as IResponse)
+    return
   } catch (error) {
     console.error(error)
     res.status(500).json({
       success: false,
       message: 'Server Error!',
     } as IResponse)
+    return
   }
 }
 
@@ -60,11 +63,13 @@ export const userLogin = async (req: Request, res: Response): Promise<void> => {
         user,
       },
     } as IResponse)
+    return
   } catch (error) {
     console.log(error)
     res
       .status(500)
       .json({ message: 'Server Error!', success: false } as IResponse)
+    return
   }
 }
 
@@ -78,11 +83,13 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
       message: 'User authenticated successfully',
       data: { auth },
     })
+    return
   } catch (error) {
     console.error(error)
     res.status(500).json({
       success: false,
       message: 'Server Error!',
     } as IResponse)
+    return
   }
 }
