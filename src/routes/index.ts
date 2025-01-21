@@ -1,16 +1,12 @@
-import { Response, Request, Router } from 'express'
+import { Router } from 'express'
 import auth from './auth'
 import inventory from './inventory'
+import category from './category'
+import { authenticate } from '../middlewares/authenticate'
 
 const route = Router()
-route.get('/', (req: Request, res: Response) => {
-  res.status(200)
-  res.render('index', {
-    title: 'EJS with TypeScript',
-    message: 'Hello, TypeScript with EJS!',
-  })
-})
-
 route.use('/auth', auth)
+route.use(authenticate)
 route.use('/inventory', inventory)
+route.use('/category', category)
 export default route
