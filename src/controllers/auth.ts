@@ -22,6 +22,7 @@ export const createUser = async (
       message: 'User created successfully',
     } as IResponse)
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       success: false,
       message: 'Server Error!',
@@ -78,6 +79,7 @@ export const authUser = async (req: Request, res: Response): Promise<void> => {
       data: { auth },
     })
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       success: false,
       message: 'Server Error!',

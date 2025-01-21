@@ -28,21 +28,15 @@ export const getInventory = async (
 ): Promise<void> => {
   try {
     const { page = 1, limit = 10 } = req.query
-    const query: any = {}
-    const { name, cost, quantity, unit, minStock } = req.query
-    if (name) query.itemName = new RegExp(String(name), 'i')
-    if (cost) query.cost = { $gte: cost }
-    if (quantity) query.quantity = { $gte: quantity }
-    if (unit) query.unit = unit
-    if (minStock) query.minStock = { $gte: minStock }
+    
 
     const [inventories, totalDocs] = await Promise.all([
-      Inventory.find(query)
+      Inventory.find({})
         .sort({ _id: -1 })
         .skip((Number(page) - 1) * Number(limit))
         .limit(Number(limit))
         .exec(),
-      Inventory.countDocuments(query),
+      Inventory.countDocuments({}),
     ])
 
     const pagination: IPagination = {
@@ -56,9 +50,8 @@ export const getInventory = async (
       success: true,
       message: 'Inventory items fetched successfully',
       data: inventories,
-      pagination
+      pagination,
     })
-
   } catch (error) {
     console.error(error)
     res.status(500).json({

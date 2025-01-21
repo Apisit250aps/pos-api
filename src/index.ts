@@ -1,11 +1,11 @@
 import app from './app'
-import { PORT } from './configs'
+import config from './config'
 import connectDB from './db'
 
 const main = async () => {
-  app.listen(PORT, async () => {
+  app.listen(config.port, async () => {
     await connectDB()
-    console.log(`Server is running on port ${PORT}`)
+    console.log(`Server is running on port ${config.port}`)
   })
 }
 

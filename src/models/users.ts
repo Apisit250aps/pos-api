@@ -52,6 +52,7 @@ userSchema.methods.authentication = async function (
     this.lastLogin = Date.now()
     return isMatch
   } catch (err) {
+    console.error(err)
     throw new Error('Error verifying password')
   }
 }

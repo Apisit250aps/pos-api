@@ -49,6 +49,7 @@ inventorySchema.methods.useRecipe = async function (
     }
     return this.quantity
   } catch (error) {
+    console.error(error)
     throw new Error(`Error using recipe`)
   }
 }

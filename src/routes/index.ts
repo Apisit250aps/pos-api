@@ -1,4 +1,4 @@
-import { Response, Request, Router, RequestHandler } from 'express'
+import { Response, Request, Router } from 'express'
 import auth from './auth'
 import inventory from './inventory'
 
