@@ -98,7 +98,8 @@ export async function getMenus(
     const { page = 1, limit = 10 } = req.query;
     const [menus, totalDocs] = await Promise.all([
       Menu.find({})
-        .sort({ _id: -1 })
+        .sort({ category: -1 })
+        .populate('category')
         .skip((Number(page) - 1) * Number(limit))
         .limit(Number(limit))
         .exec(),
