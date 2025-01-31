@@ -1,20 +1,25 @@
-import { Document, model, Schema } from 'mongoose'
+import { Document, model, ObjectId, Schema } from 'mongoose';
 
 export interface IInventory extends Document {
-  itemName: string
-  cost: number
-  itemQuantity: number
-  quantity: number
-  unit: string
-  stock: number
-  stockUnit: string
-  minStock: number
-  useRecipe(use: number): Promise<number>
+  itemName: string;
+  category: ObjectId;
+  cost: number;
+  itemQuantity: number;
+  quantity: number;
+  unit: string;
+  stock: number;
+  stockUnit: string;
+  minStock: number;
+  useRecipe(use: number): Promise<number>;
 }
 
 const inventorySchema = new Schema<IInventory>(
   {
     itemName: { type: String, required: true, unique: true },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: 'item_categories',
+    },
     cost: { type: Number, required: true },
     itemQuantity: { type: Number, default: 1, min: 0 },
     quantity: { type: Number, default: 1, min: 0 },
@@ -24,34 +29,34 @@ const inventorySchema = new Schema<IInventory>(
     minStock: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true }
-)
+);
 
-inventorySchema.pre<IInventory>('save', function () {})
+inventorySchema.pre<IInventory>('save', function () {});
 inventorySchema.methods.useRecipe = async function (
   use: number
 ): Promise<number> {
   try {
     if (use < 0) {
-      throw new Error('Use amount cannot be negative')
+      throw new Error('Use amount cannot be negative');
     }
 
     if (this.quantity < use) {
-      const useQ = use - this.quantity
+      const useQ = use - this.quantity;
 
       if (this.stock < 1) {
-        throw new Error('Not enough stocks available')
+        throw new Error('Not enough stocks available');
       }
 
-      this.stock -= 1
-      this.quantity = this.itemQuantity - useQ
+      this.stock -= 1;
+      this.quantity = this.itemQuantity - useQ;
     } else {
-      this.quantity -= use
+      this.quantity -= use;
     }
-    return this.quantity
+    return this.quantity;
   } catch (error) {
-    console.error(error)
-    throw new Error(`Error using recipe`)
+    console.error(error);
+    throw new Error(`Error using recipe`);
   }
-}
-const Inventory = model<IInventory>('inventories', inventorySchema)
-export default Inventory
+};
+const Inventory = model<IInventory>('inventories', inventorySchema);
+export default Inventory;
